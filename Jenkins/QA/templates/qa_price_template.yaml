@@ -43,15 +43,17 @@
 
     builders:
       - copyartifact:
-          project: PRICE_API_Regression(JJB)
+          project: "PRICE API Regression test"
           which-build: last-completed
           filter: "env_*.ini"
+          optional: true
+          do-not-fingerprint: true
 
       - shell: |
           top -b -n 1 | head -n 10 && hostname
 
-          rm -rf "build/${JOB_BASE_NAME}/junit-reports/*"
-          rm -rf "build/${JOB_BASE_NAME}/test_output"
+          rm -rf "build/${{JOB_BASE_NAME}}/junit-reports/*"
+          rm -rf "build/${{JOB_BASE_NAME}}/test_output"
           rm -rf generatedJUnitFiles
 
           python3 -m venv venv
@@ -66,7 +68,7 @@
           git pull
           python setup.py install
 
-          cd "${WORKSPACE}"
+          cd "${{WORKSPACE}}"
 
           pip install -r requirements.txt
 
@@ -74,12 +76,12 @@
           python env_setup.py
 
           echo ">>> Starting API tests >>>" 
-          #python -m xmlrunner discover -s tests -o "build/${JOB_BASE_NAME}/junit-reports"
-          nose2 -v tests --junit-xml-path "build/${JOB_BASE_NAME}/junit-reports/xml-report.xml"
+          #python -m xmlrunner discover -s tests -o "build/${{JOB_BASE_NAME}}/junit-reports"
+          nose2 -v tests --junit-xml-path "build/${{JOB_BASE_NAME}}/junit-reports/xml-report.xml"
 
           echo ">>> Pushing latest loans/users data to GitHub >>>" 
           git add 'env_loans.ini' 'env_users.ini'
-          git commit -m "Triggered Build: ${BUILD_NUMBER}"
+          git commit -m "Triggered Build: ${{BUILD_NUMBER}}"
           git push git@github.com:EllieSky/PRICE_Regression.git HEAD:standby -f
 
     publishers:
@@ -98,5 +100,5 @@
   
       - email:
           recipients: ellie.yampolskaya@fiserv.com,dmitry.arkhipenko@fiserv.com
-          notify-every-unstable-build: false
+          notify-every-unstable-build: true
           send-to-individuals: false
