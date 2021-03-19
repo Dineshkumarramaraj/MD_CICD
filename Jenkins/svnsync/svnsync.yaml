@@ -13,7 +13,6 @@
                        'branches/Feature/Charmander',
                        'branches/Feature/The X-Files']
             url: 'https://10.9.20.245/svn/LOS'
-            emails: 'dineshkumar.ramaraj@fiserv.com'
             emails: 'jimuel.pitel@Fiserv.com, crystalline.chua@Fiserv.com,
                      bernard.vargas@Fiserv.com, mdavy.yabut@Fiserv.com,
                      joseph.ritter@Fiserv.com, paulino.pestolantejr@Fiserv.com'
