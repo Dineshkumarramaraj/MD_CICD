@@ -1,0 +1,38 @@
+- job-template: !include: ./templates/svnsync_template.yaml
+
+- job-group:
+    name: '{name}-Jobs'
+    jobs:
+        - '{name}-{type}-JJB':
+            type: LOS
+            branches: ['branches/Feature/Chili Ice Cream',
+                       'branches/Feature/Baby Shark',
+                       'branches/Feature/Transformers',
+                       'branches/Feature/Area-51',
+                       'branches/Feature/Hobbits',
+                       'branches/Feature/Charmander',
+                       'branches/Feature/The X-Files']
+            url: 'https://10.9.20.245/svn/LOS'
+            emails: 'dineshkumar.ramaraj@fiserv.com'
+            emails: 'jimuel.pitel@Fiserv.com, crystalline.chua@Fiserv.com,
+                     bernard.vargas@Fiserv.com, mdavy.yabut@Fiserv.com,
+                     joseph.ritter@Fiserv.com, paulino.pestolantejr@Fiserv.com'
+        - '{name}-{type}-JJB':
+            type: Laravel
+            branches: ['branches/Feature/Dunkin Donuts',
+                       'branches/Feature/Ramen',
+                       'branches/Feature/The X-Files']
+            url: 'https://10.9.20.245/svn/Laravel'
+            emails: 'hitomi.mehra@Fiserv.com, marron.maranan@Fiserv.com, sherwin.dayupay@Fiserv.com'
+        - '{name}-{type}-JJB':
+            type: PCLWEB
+            branches: ['branches/Feature/Dunkin Donuts',
+                       'branches/Feature/Ramen',
+                       'branches/Feature/The X-Files']
+            url: 'https://10.9.20.245/svn/PCLWEB'
+            emails: 'hitomi.mehra@Fiserv.com,marron.maranan@Fiserv.com,michaelgerald.arcega@Fiserv.com,dineshkumar.ramaraj@fiserv.com'
+
+- project:
+    name: 'SVNSync'
+    jobs:
+        - '{name}-Jobs'

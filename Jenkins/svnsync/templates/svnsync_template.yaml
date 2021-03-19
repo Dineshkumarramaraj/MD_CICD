@@ -1,0 +1,98 @@
+    name: "{name}-{type}-JJB"
+    id: '{name}-{type}-JJB'
+    project_type: freestyle
+    block-downstream: False
+    block-upstream: False
+    concurrent: False
+    defaults: global
+    description: 'SVN Sync for {type}'
+    display-name: 'SVN Sync {type} (JJB)'
+    node: master
+    quiet-period: 0
+    retry-count: 3
+
+    scm:
+      - git:
+          url: "git@github.com:Dineshkumarramaraj/svnsync.git"
+          credentials-id: 8a018d98-bc1b-451e-a618-94293653eddd
+          #branches:
+          #  - "**"
+          ignore-externals: true
+          repo-depth: infinity
+          wipeworkspace: false
+
+    properties:
+      - raw:
+          xml: |
+            <hudson.security.AuthorizationMatrixProperty>
+              <inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.InheritParentStrategy"/>
+              <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:anonymous</permission>
+              <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:authenticated</permission>
+              <permission>hudson.model.Item.Build:anonymous</permission>
+              <permission>hudson.model.Item.Build:authenticated</permission>
+              <permission>hudson.model.Item.Workspace:anonymous</permission>
+              <permission>hudson.model.Item.Workspace:authenticated</permission>
+            </hudson.security.AuthorizationMatrixProperty>
+
+    parameters:
+      - choice:
+          name: TeamBranch
+          choices: '{branches}'
+          description: "Please select the Team Branch repository which needs to be synced"
+      - choice:
+          name: Trunk
+          choices:
+            - Trunk
+          description: "Please select the trunk repository where the changes are taken and merged into TeamBranch"
+      - choice:
+          name: SVNURL
+          choices:
+            - "{url}"
+          description: "Please add the SVN URL here. Eg: https://10.9.20.245/svn/LOS"
+
+    wrappers:
+      - workspace-cleanup
+      - credentials-binding:
+          - username-password-separated:
+              credentials-id: 1518552a-6f22-41db-b06f-0600b25346ed
+              username: 'username'
+              password: 'password'
+
+    builders:
+      - shell: |
+          #!/bin/bash
+          # Creating Python Virtual Environment
+          python3 -m venv venv
+          source venv/bin/activate
+
+          #Creata a seperate directory for SVN Sync
+          mkdir -p svnsync
+          cd svnsync
+
+          #Execute Python Script
+          python ${{WORKSPACE}}/svnsync.py "$TeamBranch" "$Trunk" "$SVNURL" -v debug
+
+    publishers:
+      - email-ext:
+          recipients: '{emails}'
+          always: true
+          subject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS for ${{TeamBranch}}"
+          content-type: html
+          body:
+             "Hi Branch Owners, <br/>
+              <br/>
+              <b>SVN Sync build # $BUILD_NUMBER is $BUILD_STATUS for '${{TeamBranch}}' branch. </b><br/>
+              <br/>
+              Check console output at <a href='$BUILD_URL'>url</a> to view full results. <br/>
+
+              Following is the last 100 lines of the log.<br/>
+              <br/>
+              --LOG-BEGIN--<br/>
+              <pre style='line-height: 22px; display: block; color: #333; font-family: Monaco,Menlo,
+              Consolas,Courier New,monospace; padding: 10.5px; margin: 0 0 11px; font-size: 13px;
+              word-break: break-all; word-wrap: break-word; white-space: pre-wrap;
+              background-color: #f5f5f5; border: 1px solid #ccc; border: 1px solid rgba(0,0,0,.15);
+              -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;'>
+              $BUILD_LOG, maxLines=100, escapeHtml=true</pre>
+              --LOG-END--"
+          attach-build-log: false
