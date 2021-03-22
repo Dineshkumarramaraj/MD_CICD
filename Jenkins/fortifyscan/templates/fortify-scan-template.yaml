@@ -1,0 +1,99 @@
+    name: "{name}-{type}-JJB"
+    id: '{name}-{type}-JJB'
+    project_type: freestyle
+    block-downstream: False
+    block-upstream: False
+    concurrent: False
+    defaults: global
+    description: "Fortify Scan for {type}"
+    display-name: "Fortify Scan for {type} (JJB)"
+    # To-do: Add a node
+    #node: 
+    quiet-period: 0
+    retry-count: 3
+
+    properties:
+      - raw:
+          xml: |
+             <hudson.security.AuthorizationMatrixProperty>
+               <inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.InheritParentStrategy"/>
+               <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:authenticated</permission>
+               <permission>hudson.model.Item.Build:authenticated</permission>
+               <permission>hudson.model.Item.Read:authenticated</permission>
+             </hudson.security.AuthorizationMatrixProperty>
+
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 20
+      artifactDaysToKeep: -1
+      artifactNumToKeep: -1
+
+    scm:
+      - svn:
+          url: "{url}"
+          credentials-id: "34f7b29c-85fa-491c-b2b4-b0bff5498492"
+          repo-depth: infinity
+          ignore-externals: true
+          workspaceupdater: wipeworkspace
+
+    triggers:
+      - timed: "{scheduler}"
+
+    wrappers:
+      - timestamps
+      - timeout:
+          timeout: 5
+          type: no-activity
+          abort: true
+      - raw: # TO-DO: Below nodeJs configuration is not required for OM module. 
+          xml: |
+            <jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.3.5">
+               <nodeJSInstallationName>WebDevNodeJS</nodeJSInstallationName>
+               <cacheLocationStrategy class="jenkins.plugins.nodejs.cache.DefaultCacheLocationLocator"/>
+            </jenkins.plugins.nodejs.NodeJSBuildWrapper>
+
+    builders:
+      - shell: 
+           !include-raw: "scripts/{type}-build.sh"
+
+    publishers:
+      - raw: # TO-DO: Need to find an alternate method to store Tokens. 
+          xml: |
+            <org.jenkinsci.plugins.fodupload.StaticAssessmentBuildStep plugin="fortify-on-demand-uploader@6.1.0">
+              <sharedBuildStep>
+                <model>
+                  <releaseId>291319</releaseId>
+                  <bsiTokenOriginal>eyJ0ZW5hbnRJZCI6MTQ3MiwidGVuYW50Q29kZSI6ImZpc2VydiIsInJlbGVhc2VJZCI6MjkxMzE5LCJwYXlsb2FkVHlwZSI6IkFOQUxZU0lTX1BBWUxPQUQiLCJhc3Nlc3NtZW50VHlwZUlkIjoyNzQsInRlY2hub2xvZ3lUeXBlIjoiUEhQIiwidGVjaG5vbG9neVR5cGVJZCI6OSwidGVjaG5vbG9neVZlcnNpb24iOm51bGwsInRlY2hub2xvZ3lWZXJzaW9uSWQiOm51bGwsImF1ZGl0UHJlZmVyZW5jZSI6Ik1hbnVhbCIsImF1ZGl0UHJlZmVyZW5jZUlkIjoxLCJpbmNsdWRlVGhpcmRQYXJ0eSI6ZmFsc2UsImluY2x1ZGVPcGVuU291cmNlQW5hbHlzaXMiOnRydWUsInBvcnRhbFVyaSI6Imh0dHBzOi8vYW1zLmZvcnRpZnkuY29tIiwiYXBpVXJpIjoiaHR0cHM6Ly9hcGkuYW1zLmZvcnRpZnkuY29tIiwic2NhblByZWZlcmVuY2UiOiJTdGFuZGFyZCIsInNjYW5QcmVmZXJlbmNlSWQiOjF9</bsiTokenOriginal>
+                  <purchaseEntitlements>false</purchaseEntitlements>
+                  <entitlementPreference>SubscriptionOnly</entitlementPreference>
+                  <srcLocation>/data/jenkins/workspace/Fortify On Demand for OM</srcLocation>
+                  <remediationScanPreferenceType>RemediationScanIfAvailable</remediationScanPreferenceType>
+                  <inProgressScanActionType>Queue</inProgressScanActionType>
+                  <inProgressBuildResultType>FailBuild</inProgressBuildResultType>
+                </model>
+                <authModel>
+                  <overrideGlobalConfig>true</overrideGlobalConfig>
+                  <username>jeremy.vierra</username>
+                  <personalAccessToken>b9ccbe9a-909b-4aea-ad93-43684e000c4a</personalAccessToken>
+                  <tenantId>fiserv</tenantId>
+                </authModel>
+                <scanId>0</scanId>
+              </sharedBuildStep>
+            </org.jenkinsci.plugins.fodupload.StaticAssessmentBuildStep>
+      - raw:
+          xml: |
+            <org.jenkinsci.plugins.fodupload.PollingBuildStep plugin="fortify-on-demand-uploader@6.1.0">
+              <sharedBuildStep>
+                <releaseId>291319</releaseId>
+                <bsiToken>eyJ0ZW5hbnRJZCI6MTQ3MiwidGVuYW50Q29kZSI6ImZpc2VydiIsInJlbGVhc2VJZCI6MjkxMzE5LCJwYXlsb2FkVHlwZSI6IkFOQUxZU0lTX1BBWUxPQUQiLCJhc3Nlc3NtZW50VHlwZUlkIjoyNzQsInRlY2hub2xvZ3lUeXBlIjoiUEhQIiwidGVjaG5vbG9neVR5cGVJZCI6OSwidGVjaG5vbG9neVZlcnNpb24iOm51bGwsInRlY2hub2xvZ3lWZXJzaW9uSWQiOm51bGwsImF1ZGl0UHJlZmVyZW5jZSI6Ik1hbnVhbCIsImF1ZGl0UHJlZmVyZW5jZUlkIjoxLCJpbmNsdWRlVGhpcmRQYXJ0eSI6ZmFsc2UsImluY2x1ZGVPcGVuU291cmNlQW5hbHlzaXMiOnRydWUsInBvcnRhbFVyaSI6Imh0dHBzOi8vYW1zLmZvcnRpZnkuY29tIiwiYXBpVXJpIjoiaHR0cHM6Ly9hcGkuYW1zLmZvcnRpZnkuY29tIiwic2NhblByZWZlcmVuY2UiOiJTdGFuZGFyZCIsInNjYW5QcmVmZXJlbmNlSWQiOjF9</bsiToken>
+                <pollingInterval>1</pollingInterval>
+                <scanId>-1</scanId>
+                <policyFailureBuildResultPreference>2</policyFailureBuildResultPreference>
+                <authModel>
+                  <overrideGlobalConfig>true</overrideGlobalConfig>
+                  <username>jeremy.vierra</username>
+                  <personalAccessToken>b9ccbe9a-909b-4aea-ad93-43684e000c4a</personalAccessToken>
+                  <tenantId>fiserv</tenantId>
+                </authModel>
+              </sharedBuildStep>
+            </org.jenkinsci.plugins.fodupload.PollingBuildStep>

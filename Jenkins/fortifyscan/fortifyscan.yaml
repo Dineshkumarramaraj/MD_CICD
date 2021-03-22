@@ -1,0 +1,17 @@
+- job-template: !include: ./templates/fortify-scan_template.yaml
+
+- job-group:
+    name: '{name}-Jobs'
+    jobs:
+        - '{name}-{type}-JJB':
+            type: B2B
+            url: 'svn://pcldevsvn02.development.pclender.local/PCLWEB/Trunk'
+            scheduler: "59 23 * * 0"
+        - '{name}-{type}-JJB':
+            type: OM
+            url: 'svn://10.9.20.245/Laravel/Trunk'
+            scheduler: "59 22 * * 0"
+- project:
+    name: 'Fortify-Scan'
+    jobs:
+        - '{name}-Jobs'
