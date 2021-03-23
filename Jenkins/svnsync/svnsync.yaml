@@ -1,4 +1,5 @@
 - job-template: !include: ./templates/svnsync_template.yaml
+- view-template: !include: ./templates/svnsync_view_template.yaml
 
 - job-group:
     name: '{name}-Jobs'
@@ -33,5 +34,7 @@
 
 - project:
     name: 'SVNSync'
+    views:
+        - 'SVNSync-Jobs-JJB'
     jobs:
         - '{name}-Jobs'

@@ -1,0 +1,4 @@
+ name: "SVNSync-Jobs-JJB"
+ description: "SVN Sync for Laravel, B2B and LOS"
+ view-type: list
+ regex: '(SVNSync).*'

@@ -1,4 +1,5 @@
-- job-template: !include: ./templates/fortify-scan_template.yaml
+- job-template: !include: ./templates/fortify-scan-template.yaml
+- view-template: !include: ./templates/fortify-scan-view-template.yaml
 
 - job-group:
     name: '{name}-Jobs'
@@ -14,5 +15,7 @@
 
 - project:
     name: 'Fortify-Scan'
+    views:
+        - 'Fortify-Scan-Jobs-JJB'
     jobs:
         - '{name}-Jobs'

@@ -1,0 +1,4 @@
+ name: "Fortify-Scan-Jobs-JJB"
+ description: "Fortify Scan for B2B and OM Projects"
+ view-type: list
+ regex: '(Fortify-Scan).*'
