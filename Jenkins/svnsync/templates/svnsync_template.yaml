@@ -58,6 +58,11 @@
               username: 'username'
               password: 'password'
 
+    triggers:
+      - parameterized-timer:
+          cron: |
+            {parameters}
+
     builders:
       - shell: |
           #!/bin/bash

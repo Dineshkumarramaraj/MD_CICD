@@ -14,6 +14,15 @@
                        'branches/Feature/Charmander',
                        'branches/Feature/The X-Files']
             url: 'https://10.9.20.245/svn/LOS'
+            parameters:
+               '0 4 * * * % TeamBranch=branches/Feature/Chili Ice Cream;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/LOS
+                30 4 * * * % TeamBranch=branches/Feature/Baby Shark;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/LOS
+                0 5 * * * % TeamBranch=branches/Feature/Transformers;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/LOS
+                30 5 * * * % TeamBranch=branches/Feature/Area-51;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/LOS
+                0 6 * * * % TeamBranch=branches/Feature/Hobbits;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/LOS
+                30 6 * * * % TeamBranch=branches/Feature/Charmander;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/LOS
+                0 7 * * * % TeamBranch=branches/Feature/The X-Files;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/LOS'
+
             emails: 'jimuel.pitel@Fiserv.com, crystalline.chua@Fiserv.com,
                      bernard.vargas@Fiserv.com, mdavy.yabut@Fiserv.com,
                      joseph.ritter@Fiserv.com, paulino.pestolantejr@Fiserv.com'
@@ -23,6 +32,10 @@
                        'branches/Feature/Ramen',
                        'branches/Feature/The X-Files']
             url: 'https://10.9.20.245/svn/Laravel'
+            parameters:
+               '0 4 * * * % TeamBranch=branches/Feature/Dunkin Donuts;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/Laravel
+                30 4 * * * % TeamBranch=branches/Feature/Ramen;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/Laravel
+                0 5 * * * % TeamBranch=branches/Feature/The X-Files;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/Laravel'
             emails: 'hitomi.mehra@Fiserv.com, marron.maranan@Fiserv.com, sherwin.dayupay@Fiserv.com'
         - '{name}-{type}-JJB':
             type: PCLWEB
@@ -30,6 +43,10 @@
                        'branches/Feature/Ramen',
                        'branches/Feature/The X-Files']
             url: 'https://10.9.20.245/svn/PCLWEB'
+            parameters:
+               '0 4 * * * % TeamBranch=branches/Feature/Dunkin Donuts;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/PCLWEB
+                30 4 * * * % TeamBranch=branches/Feature/Ramen;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/PCLWEB
+                0 5 * * * % TeamBranch=branches/Feature/The X-Files;Trunk=Trunk;SVNURL=https://10.9.20.245/svn/PCLWEB'
             emails: 'hitomi.mehra@Fiserv.com,marron.maranan@Fiserv.com,michaelgerald.arcega@Fiserv.com,dineshkumar.ramaraj@fiserv.com'
 
 - project:
